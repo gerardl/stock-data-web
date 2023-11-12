@@ -6,11 +6,14 @@ PORT = 5001
 # make a Flask application object called app
 app = Flask(__name__)
 app.config["DEBUG"] = True
+app.stocks = []
 
-@app.route('/')
+@app.before_request
+def load_stock_data():
+    app.stocks = StockLoader('stocks.csv').stocks
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    stocks = StockLoader('stocks.csv').stocks
-
-    return render_template('index.html', stocks=stocks)
+    return render_template('index.html', stocks=app.stocks)
 
 app.run(host="0.0.0.0", port=PORT)
