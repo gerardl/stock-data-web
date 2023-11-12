@@ -17,8 +17,9 @@
         <label for="chart_type">Choose Chart Type</label>
         <select name="chart_type" id="chart_type">
             <option value="">Select a Chart Type</option>
-            <option value="line">Line</option>
-            <option value="bar">Bar</option>
+            {% for chart_type in chart_types %}
+            <option value="{{ chart_type }}">{{ loop.index }}. {{ chart_type }}</option>
+            {% endfor %}
         </select>
     </div>
 
@@ -26,10 +27,9 @@
         <label for="time_series">Choose Time Series</label>
         <select name="time_series" id="time_series">
             <option value="">Select a Time Series</option>
-            <option value="1">1. Intraday</option>
-            <option value="2">2. Daily</option>
-            <option value="3">3. Weekly</option>
-            <option value="4">4. Monthly</option>
+            {% for time_series in time_series %}
+            <option value="{{ time_series }}">{{ loop.index }}. {{ time_series }}</option>
+            {% endfor %}
         </select>
     </div>
 
@@ -45,5 +45,11 @@
 
     <button type="submit">Submit</button>
 </form>
+
+<div class="chart">
+    {% if chart %}
+    {{ chart }}
+    {% endif %}
+</div>
 
 {% endblock %}

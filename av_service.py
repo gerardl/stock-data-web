@@ -27,6 +27,8 @@ class AlphaVantageService:
         }
         params.update(additional_params)
 
+        print(f"params: {params}")
+
         response = requests.get(self.BASE_URL, params=params)
         # ensure the request was successful
         if response.status_code != 200:
