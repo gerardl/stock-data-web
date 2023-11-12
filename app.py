@@ -15,7 +15,7 @@ app.stocks = []
 app.chart_types = ["Bar", "Line"]
 app.time_series = ["Intraday", "Daily", "Weekly", "Monthly"]
 
-app.api_key = 'SV7DD9W1DE9D97RZ'
+app.api_key = 'NEROPB7GSBY1QYCG' #J5LDCQZ319SD6AU8 NEROPB7GSBY1QYCG SV7DD9W1DE9D97RZ
 
 @app.before_request
 def load_stock_data():
