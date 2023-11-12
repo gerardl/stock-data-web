@@ -53,3 +53,20 @@ button[type=submit] {
 button[type=submit]:hover {
     background-color: #218838;
 }
+
+.chart {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 20px auto;
+    text-align: center; /* Center the embed chart */
+}
+
+embed {
+    max-width: 100%;
+    height: auto; /* Adjust height automatically */
+    border: 1px solid #ddd; /* Optional border for the embed element */
+    border-radius: 4px; /* Rounded corners for the embed element */
+}

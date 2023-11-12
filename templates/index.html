@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Stock Data Visualizer</h1>
 <form action="{{ url_for('index') }}" method="post">
     <div class="form-field">
         <label for="symbol">Choose Symbol</label>
@@ -46,10 +45,10 @@
     <button type="submit">Submit</button>
 </form>
 
+{% if chart %}
 <div class="chart">
-    {% if chart %}
-    {{ chart }}
-    {% endif %}
+    <embed type="image/svg+xml" src={{chart.render_data_uri()|safe}} />
 </div>
+{% endif %}
 
 {% endblock %}

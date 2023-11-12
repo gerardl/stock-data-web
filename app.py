@@ -8,7 +8,7 @@ PORT = 5001
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.secret_key = 'dev'
+app.config['SECRET_KEY'] = 'your secret key'
 
 # menu options
 app.stocks = []
@@ -36,9 +36,9 @@ def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bo
     if not start_date or not end_date:
         flash('Start and End Date are required!')
         valid = False
-    # turn start_date and end_date into datetime objects and compare
-    start_date = datetime.strptime(start_date, '%Y-%m-%d')
-    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+    # # turn start_date and end_date into datetime objects and compare
+    # start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    # end_date = datetime.strptime(end_date, '%Y-%m-%d')
     if start_date > end_date:
         flash('End Date must be greater than or equal to Start Date!')
         valid = False
@@ -48,12 +48,15 @@ def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bo
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    chart = None
+
     if request.method == 'POST':
         symbol = request.form['symbol']
         chart_type = request.form['chart_type']
         time_series = request.form['time_series']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
+        
 
         if validate_inputs(symbol, chart_type, time_series, start_date, end_date):
             try:
@@ -65,6 +68,7 @@ def index():
                 av_service = AlphaVantageService(app.api_key)
                 start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 end_date = datetime.strptime(end_date, '%Y-%m-%d')
+                # todo: pass type instead
                 if time_series == 'Intraday':
                     time_series = av_service.get_intraday(symbol, start_date, end_date)
                 elif time_series == 'Daily':
@@ -74,7 +78,7 @@ def index():
                 elif time_series == 'Monthly':
                     time_series = av_service.get_monthly(symbol, start_date, end_date)
                 chart_service = ChartService()
-                chart_service.create_chart(chart_type, time_series)
+                chart = chart_service.create_chart(chart_type, time_series)
             except Exception as e:
                 flash(str(e))
                 return redirect(url_for('index'))
@@ -87,6 +91,6 @@ def index():
         # except Exception as e:
         #     flash(str(e))
         #     return redirect(url_for('index'))
-    return render_template('index.html', stocks=app.stocks, chart_types=app.chart_types, time_series=app.time_series)
+    return render_template('index.html', stocks=app.stocks, chart_types=app.chart_types, time_series=app.time_series, chart=chart)
 
 app.run(host="0.0.0.0", port=PORT)

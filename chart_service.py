@@ -23,8 +23,7 @@ class ChartService:
         chart.add('Low', low)
         chart.add('Close', close)
         
-        # show in browser with lxml
-        chart.render_in_browser()
+        return chart
 
 
 
