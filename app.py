@@ -4,6 +4,7 @@ from av_service import AlphaVantageService
 from chart_service import ChartService
 from datetime import datetime
 
+HOST = "0.0.0.0"
 PORT = 5001
 
 app = Flask(__name__)
@@ -21,31 +22,6 @@ app.api_key = 'NEROPB7GSBY1QYCG' #J5LDCQZ319SD6AU8 NEROPB7GSBY1QYCG SV7DD9W1DE9D
 def load_stock_data():
     app.stocks = StockLoader('stocks.csv').stocks
 
-def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bool:
-    valid = True
-
-    if not symbol:
-        flash('Symbol is required!')
-        valid = False
-    if not chart_type or chart_type not in app.chart_types:
-        flash('Chart Type is required!')
-        valid = False
-    if not time_series or time_series not in app.time_series:
-        flash('Time Series is required!')
-        valid = False
-    if not start_date or not end_date:
-        flash('Start and End Date are required!')
-        valid = False
-    # # turn start_date and end_date into datetime objects and compare
-    # start_date = datetime.strptime(start_date, '%Y-%m-%d')
-    # end_date = datetime.strptime(end_date, '%Y-%m-%d')
-    if start_date > end_date:
-        flash('End Date must be greater than or equal to Start Date!')
-        valid = False
-    
-    return valid
-    
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     chart = None
@@ -57,7 +33,6 @@ def index():
         start_date = request.form['start_date']
         end_date = request.form['end_date']
         
-
         if validate_inputs(symbol, chart_type, time_series, start_date, end_date):
             try:
                 print(f"symbol: {symbol}")
@@ -68,29 +43,55 @@ def index():
                 av_service = AlphaVantageService(app.api_key)
                 start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 end_date = datetime.strptime(end_date, '%Y-%m-%d')
-                # todo: pass type instead
-                if time_series == 'Intraday':
-                    time_series = av_service.get_intraday(symbol, start_date, end_date)
-                elif time_series == 'Daily':
-                    time_series = av_service.get_daily(symbol, start_date, end_date)
-                elif time_series == 'Weekly':
-                    time_series = av_service.get_weekly(symbol, start_date, end_date)
-                elif time_series == 'Monthly':
-                    time_series = av_service.get_monthly(symbol, start_date, end_date)
+
+                time_series = av_service.get_time_series(time_series, symbol, start_date, end_date)
                 chart_service = ChartService()
                 chart = chart_service.create_chart(chart_type, time_series)
             except Exception as e:
                 flash(str(e))
                 return redirect(url_for('index'))
 
-        # try:
-        #     av_service = AlphaVantageService(app.api_key)
-        #     time_series = av_service.get_time_series_daily(symbol, start_date, end_date)
-        #     chart_service = ChartService()
-        #     chart_service.create_chart(chart_type, time_series)
-        # except Exception as e:
-        #     flash(str(e))
-        #     return redirect(url_for('index'))
     return render_template('index.html', stocks=app.stocks, chart_types=app.chart_types, time_series=app.time_series, chart=chart)
 
-app.run(host="0.0.0.0", port=PORT)
+def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bool:
+    valid = True
+
+    # symbol exists and is valid (in the list of stocks)
+    if not symbol or symbol not in [stock.symbol for stock in app.stocks]:
+        flash('Symbol is required!')
+        valid = False
+    # chart type exists and is valid
+    if not chart_type or chart_type not in app.chart_types:
+        flash('Chart Type is required!')
+        valid = False
+    # time series exists and is valid
+    if not time_series or time_series not in app.time_series:
+        flash('Time Series is required!')
+        valid = False
+    # start date and end date exists
+    if not start_date or not end_date:
+        flash('Start and End Date are required!')
+        valid = False
+    else:
+        # we have dates, so we can do extra validation.
+        # validate that date strings are in the correct format of YYYY-MM-DD
+        try:
+            start_datetime = datetime.strptime(start_date, '%Y-%m-%d')
+        except ValueError:
+            flash('Start Date must be in the format YYYY-MM-DD!')
+            valid = False
+        try:
+            end_datetime = datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            flash('End Date must be in the format YYYY-MM-DD!')
+            valid = False
+        # validate that start date is before end date
+        if start_datetime > end_datetime:
+            flash('End Date must be greater than or equal to Start Date!')
+            valid = False
+    
+    return valid
+
+
+# start the flask app
+app.run(host=HOST, port=PORT)

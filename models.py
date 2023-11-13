@@ -29,11 +29,6 @@ class TimeSeries:
         self.series = self.__filter_date_range(series)
 
     def __filter_date_range(self, series: list):
-        """
-        Filter the time series to only include stock data within the specified date range.
-        :return: A list of Stock instances within the specified date range.
-        """
-
         # find the date format of the series
         date_format = '%Y-%m-%d'
         if len(series) > 0:

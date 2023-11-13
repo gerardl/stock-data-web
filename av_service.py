@@ -63,8 +63,20 @@ class AlphaVantageService:
         except KeyError:
             raise StockQueryException("API returned an unexpected response.")
 
+    def get_time_series(self, series_type: str, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
+        if series_type == "Intraday":
+            return self.__get_intraday(symbol, start_date, end_date)
+        elif series_type == "Daily":
+            return self.__get_daily(symbol, start_date, end_date)
+        elif series_type == "Weekly":
+            return self.__get_weekly(symbol, start_date, end_date)
+        elif series_type == "Monthly":
+            return self.__get_monthly(symbol, start_date, end_date)
+        else:
+            raise StockQueryException(f"Invalid series type: {series_type}")
+
     # Intraday is limited to a 1 month range, so we need to make multiple requests to get the full dataset
-    def get_intraday(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
+    def __get_intraday(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
         months = Utility.get_months_between(start_date, end_date)
         series_data = []
         for month in months:
@@ -73,18 +85,17 @@ class AlphaVantageService:
 
         return TimeSeries(symbol, self.INTRA_TYPE, start_date, end_date, series_data)
 
-    def get_daily(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
+    def __get_daily(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
         res = self.__query_api(self.DAILY_TYPE, symbol)
         series_data = self.__create_series_data(symbol, res, 'Time Series (Daily)')
         return TimeSeries(symbol, self.DAILY_TYPE, start_date, end_date, series_data)
 
-    
-    def get_weekly(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
+    def __get_weekly(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
         res = self.__query_api(self.WEEKLY_TYPE, symbol)
         series_data = self.__create_series_data(symbol, res, 'Weekly Time Series')
         return TimeSeries(symbol, self.WEEKLY_TYPE, start_date, end_date, series_data)
     
-    def get_monthly(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
+    def __get_monthly(self, symbol: str, start_date: datetime, end_date: datetime) -> TimeSeries:
         res = self.__query_api(self.MONTHLY_TYPE, symbol)
         series_data = self.__create_series_data(symbol, res, 'Monthly Time Series')
         return TimeSeries(symbol, self.MONTHLY_TYPE, start_date, end_date, series_data)
