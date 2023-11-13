@@ -89,6 +89,10 @@ def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bo
         if start_datetime > end_datetime:
             flash('End Date must be greater than or equal to Start Date!')
             valid = False
+        # validate that intraday time series is not more than 30 days
+        if time_series == 'Intraday' and (end_datetime - start_datetime).days > 30:
+            flash('Due to a limitation of the AlphaVantage API, Intraday time series cannot be more than 30 days!')
+            valid = False
     
     return valid
 
