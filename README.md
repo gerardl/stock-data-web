@@ -8,6 +8,8 @@ pip install -r requirements.txt --user
 
 ### Configure API Key
 
-an API key from [Alpha Vantage](https://www.alphavantage.co/) is required. Set your API key in ...
+an API key from [Alpha Vantage](https://www.alphavantage.co/) is required. Set your API key in app.api_key in app.py file
 
 ### Run the Application
+
+app.py is the entry point of the flask application. Debug this file.
