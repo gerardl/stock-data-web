@@ -23,11 +23,11 @@
     </div>
 
     <div class="form-field">
-        <label for="time_series">Choose Time Series</label>
-        <select name="time_series" id="time_series">
+        <label for="time_series_type">Choose Time Series</label>
+        <select name="time_series_type" id="time_series_type">
             <option value="">Select a Time Series</option>
-            {% for time_series in time_series %}
-            <option value="{{ time_series }}">{{ loop.index }}. {{ time_series }}</option>
+            {% for time_series_type in time_series_types %}
+            <option value="{{ time_series_type }}">{{ loop.index }}. {{ time_series_type }}</option>
             {% endfor %}
         </select>
     </div>

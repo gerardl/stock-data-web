@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'your secret key'
 # menu options
 app.stocks = []
 app.chart_types = ["Bar", "Line"]
-app.time_series = ["Intraday", "Daily", "Weekly", "Monthly"]
+app.time_series_types = ["Intraday", "Daily", "Weekly", "Monthly"]
 
 app.api_key = 'NEROPB7GSBY1QYCG' #J5LDCQZ319SD6AU8 NEROPB7GSBY1QYCG SV7DD9W1DE9D97RZ
 
@@ -29,31 +29,31 @@ def index():
     if request.method == 'POST':
         symbol = request.form['symbol']
         chart_type = request.form['chart_type']
-        time_series = request.form['time_series']
+        time_series_type = request.form['time_series_type']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
         
-        if validate_inputs(symbol, chart_type, time_series, start_date, end_date):
+        if validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
             try:
                 print(f"symbol: {symbol}")
                 print(f"chart_type: {chart_type}")
-                print(f"time_series: {time_series}")
+                print(f"time_series_type: {time_series_type}")
                 print(f"start_date: {start_date}")
                 print(f"end_date: {end_date}")
                 av_service = AlphaVantageService(app.api_key)
                 start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-                time_series = av_service.get_time_series(time_series, symbol, start_date, end_date)
+                time_series = av_service.get_time_series(time_series_type, symbol, start_date, end_date)
                 chart_service = ChartService()
                 chart = chart_service.create_chart(chart_type, time_series)
             except Exception as e:
                 flash(str(e))
                 return redirect(url_for('index'))
 
-    return render_template('index.html', stocks=app.stocks, chart_types=app.chart_types, time_series=app.time_series, chart=chart)
+    return render_template('index.html', stocks=app.stocks, chart_types=app.chart_types, time_series_types=app.time_series_types, chart=chart)
 
-def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bool:
+def validate_inputs(symbol, chart_type, time_series_type, start_date, end_date) -> bool:
     valid = True
 
     # symbol exists and is valid (in the list of stocks)
@@ -65,7 +65,7 @@ def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bo
         flash('Chart Type is required!')
         valid = False
     # time series exists and is valid
-    if not time_series or time_series not in app.time_series:
+    if not time_series_type or time_series_type not in app.time_series_types:
         flash('Time Series is required!')
         valid = False
     # start date and end date exists
@@ -90,7 +90,7 @@ def validate_inputs(symbol, chart_type, time_series, start_date, end_date) -> bo
             flash('End Date must be greater than or equal to Start Date!')
             valid = False
         # validate that intraday time series is not more than 30 days
-        if time_series == 'Intraday' and (end_datetime - start_datetime).days > 30:
+        if time_series_type == 'Intraday' and (end_datetime - start_datetime).days > 30:
             flash('Due to a limitation of the AlphaVantage API, Intraday time series cannot be more than 30 days!')
             valid = False
     
