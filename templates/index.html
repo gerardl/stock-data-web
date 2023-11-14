@@ -7,7 +7,7 @@
         <select name="symbol" id="symbol">
             <option value="">Select a Symbol</option>
             {% for stock in stocks %}
-            <option value="{{ stock.symbol }}">{{ stock.symbol }}</option>
+            <option value="{{ stock.symbol }}" {% if session.symbol == stock.symbol %}selected{% endif %}>{{ stock.symbol }}</option>
             {% endfor %}
         </select>
     </div>
@@ -17,7 +17,7 @@
         <select name="chart_type" id="chart_type">
             <option value="">Select a Chart Type</option>
             {% for chart_type in chart_types %}
-            <option value="{{ chart_type }}">{{ loop.index }}. {{ chart_type }}</option>
+            <option value="{{ chart_type }}" {% if session.chart_type == chart_type %}selected{% endif %}>{{ loop.index }}. {{ chart_type }}</option>
             {% endfor %}
         </select>
     </div>
@@ -27,19 +27,27 @@
         <select name="time_series_type" id="time_series_type">
             <option value="">Select a Time Series</option>
             {% for time_series_type in time_series_types %}
-            <option value="{{ time_series_type }}">{{ loop.index }}. {{ time_series_type }}</option>
+            <option value="{{ time_series_type }}" {% if session.time_series_type == time_series_type %}selected{% endif %}>{{ loop.index }}. {{ time_series_type }}</option>
             {% endfor %}
         </select>
     </div>
 
     <div class="form-field">
         <label for="start_date">Start Date</label>
+        {% if session.start_date %}
+        <input type="date" name="start_date" id="start_date" value="{{session.start_date}}">
+        {% else %}
         <input type="date" name="start_date" id="start_date">
+        {% endif %}
     </div>
 
     <div class="form-field">
         <label for="end_date">End Date</label>
+        {% if session.start_date %}
+        <input type="date" name="end_date" id="end_date" value="{{session.end_date}}">
+        {% else %}
         <input type="date" name="end_date" id="end_date">
+        {% endif %}
     </div>
 
     <button type="submit">Submit</button>
