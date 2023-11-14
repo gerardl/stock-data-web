@@ -1,5 +1,7 @@
 # Stock Data Visualizer - Web Version
 
+![Site Example](example.png)
+
 Project 3a for INFOTC-4320-01 2023FS by Gerard Lucas
 
 ### To Install Dependencies
