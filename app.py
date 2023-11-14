@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, flash, redirect, abort
+from flask import Flask, render_template, request, url_for, flash, redirect, abort, session
 from stock_loader import StockLoader
 from av_service import AlphaVantageService
 from chart_service import ChartService
@@ -32,6 +32,15 @@ def index():
         time_series_type = request.form['time_series_type']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
+
+        # save the form inputs to the session so we can pre-populate the form on the next request
+        # if there is an error
+        session['symbol'] = symbol
+        session['chart_type'] = chart_type
+        session['time_series_type'] = time_series_type
+        session['start_date'] = start_date
+        session['end_date'] = end_date
+
         
         if validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
             try:
@@ -47,6 +56,9 @@ def index():
                 time_series = av_service.get_time_series(time_series_type, symbol, start_date, end_date)
                 chart_service = ChartService()
                 chart = chart_service.create_chart(chart_type, time_series)
+
+                # clear the session on success
+                session.clear()
             except Exception as e:
                 flash(str(e))
                 return redirect(url_for('index'))
