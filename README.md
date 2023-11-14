@@ -16,7 +16,7 @@ app.py is the entry point of the flask application. Debug this file.
 
 ### TODO
 
-error handling on stock loader.
-general application error handling.
-clean up printing.
-implement docker.
+error handling on stock loader.  
+general application error handling.  
+clean up printing.  
+implement docker.  
