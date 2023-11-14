@@ -13,3 +13,10 @@ an API key from [Alpha Vantage](https://www.alphavantage.co/) is required. Set y
 ### Run the Application
 
 app.py is the entry point of the flask application. Debug this file.
+
+### TODO
+
+error handling on stock loader.
+general application error handling.
+clean up printing.
+implement docker.
