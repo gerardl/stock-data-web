@@ -43,11 +43,6 @@ def index():
         
         if validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
             try:
-                print(f"symbol: {symbol}")
-                print(f"chart_type: {chart_type}")
-                print(f"time_series_type: {time_series_type}")
-                print(f"start_date: {start_date}")
-                print(f"end_date: {end_date}")
                 av_service = AlphaVantageService(app.api_key)
                 start_date = datetime.strptime(start_date, '%Y-%m-%d')
                 end_date = datetime.strptime(end_date, '%Y-%m-%d')
