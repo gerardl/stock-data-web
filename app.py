@@ -39,7 +39,6 @@ def index():
         session['time_series_type'] = time_series_type
         session['start_date'] = start_date
         session['end_date'] = end_date
-
         
         if validate_inputs(symbol, chart_type, time_series_type, start_date, end_date):
             try:
