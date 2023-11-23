@@ -5,7 +5,6 @@ from chart_service import ChartService
 from datetime import datetime
 
 HOST = "0.0.0.0"
-PORT = 5001
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -110,4 +109,4 @@ def validate_inputs(symbol, chart_type, time_series_type, start_date, end_date) 
 
 
 # start the flask app
-app.run(host=HOST, port=PORT)
+app.run(host=HOST)
