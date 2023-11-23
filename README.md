@@ -4,7 +4,7 @@
 
 Project 3a for INFOTC-4320-01 2023FS by Gerard Lucas
 
-### To Install Dependencies
+### To Install Dependencies Locally
 
 pip install -r requirements.txt --user
 
@@ -14,11 +14,6 @@ an API key from [Alpha Vantage](https://www.alphavantage.co/) is required. Set y
 
 ### Run the Application
 
-app.py is the entry point of the flask application. Debug this file.
+Docker: docker-compose up -d
 
-### TODO
-
-error handling on stock loader.  
-general application error handling.  
-clean up printing.  
-implement docker.  
+Local Debug: app.py is the entry point of the flask application. Debug this file.  
